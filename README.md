@@ -1,35 +1,11 @@
-# Umarxo‘ja va Feruza — elektron taklifnoma
+# Umarxo‘ja & Feruza — scroll invitation
 
-## Что это
+A minimal mobile wedding invitation that assembles itself as the guest scrolls.
 
-Мобильный одностраничный сайт-приглашение в стиле референса из Instagram.
+- blank cream opening canvas;
+- scroll-controlled navy-and-gold frame animation;
+- names, invitation message, date, venue and family attribution reveal in stages;
+- no countdown, cards, map, RSVP, buttons or extra sections;
+- responsive and reduced-motion friendly.
 
-## Что уже работает
-
-- стартовый экран с сердцем;
-- плавное открытие приглашения;
-- оригинальная карточка с неизменённым текстом;
-- обратный отсчёт до 6 сентября 2026, 18:00 (Asia/Tashkent);
-- блок даты, времени, места и ориентира;
-- кнопка Google Maps;
-- скачивание события в календарь (`event.ics`);
-- RSVP-форма и сохранение ответа на устройстве;
-- мобильная адаптация и режим reduced motion.
-
-## Как посмотреть
-
-Откройте `index.html` в браузере. Для полной проверки локально:
-
-```bash
-cd /Users/sean/Downloads/Umarxoja-Feruza-Invitation
-python3 -m http.server 8765
-```
-
-После этого откройте `http://127.0.0.1:8765/`.
-
-## Что нужно перед публикацией
-
-1. Точная ссылка или координаты ресторана — сейчас используется поиск Google Maps по названию и ориентиру.
-2. Telegram username или WhatsApp-номер организатора — сейчас RSVP сохраняется только на устройстве гостя.
-3. По желанию: музыкальный файл MP3. Сейчас при открытии звучит только короткий мягкий сигнал, потому что музыка не была предоставлена.
-4. Выбор хостинга/домена. Подойдут GitHub Pages, Netlify, Vercel или обычный сайт.
+Live site: https://seanutk.github.io/umarxoja-feruza-invitation/
