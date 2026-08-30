@@ -387,7 +387,7 @@
         <article class="rsvp-card reveal">
           <p class="section__eyebrow">Taklifni tasdiqlash</p>
           <h2 class="section__title">Sizni kutamiz</h2>
-          <p class="section__lead" style="color:rgba(255,255,255,.7)">Iltimos, tashrifingizni belgilang. Javob faqat ushbu qurilmada saqlanadi.</p>
+          <p class="section__lead" style="color:rgba(255,255,255,.7)">Iltimos, tashrifingizni belgilang. Javobingiz mehmonlar ro‘yxatida saqlanadi.</p>
           <div class="rsvp-options">
             <button class="rsvp-btn" type="button" data-rsvp="yes">Albatta boraman</button>
             <button class="rsvp-btn" type="button" data-rsvp="no">Afsus, bora olmayman</button>
@@ -411,6 +411,8 @@
       'use strict';
       const $ = (selector, root = document) => root.querySelector(selector);
       const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+      const RSVP_API_URL = 'https://ckftwezdvbsotapcpehk.supabase.co/rest/v1/wedding_rsvps';
+      const RSVP_API_KEY = 'sb_publishable_zpZewz3b9u8B87TYiKmbWw_pxLHgnBb';
       const gate = $('#gate');
       const site = $('#site');
       const envelope = $('#envelope');
@@ -511,13 +513,44 @@
       });
 
       const rsvpNote = $('#rsvpNote');
-      const setRsvp = value => {
+      const getGuestKey = () => {
+        let key = storageGet('weddingGuestKey');
+        if (!key) {
+          key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `guest-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+          storageSet('weddingGuestKey', key);
+        }
+        return key;
+      };
+      const saveRsvpOnline = async value => {
+        const payload = { guest_key: getGuestKey(), guest_name: guest || 'aziz mehmon', response: value };
+        const response = await fetch(`${RSVP_API_URL}?on_conflict=guest_key`, {
+          method: 'POST',
+          headers: {
+            'apikey': RSVP_API_KEY,
+            'Authorization': `Bearer ${RSVP_API_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates,return=minimal'
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error(`RSVP save failed: ${response.status}`);
+      };
+      const setRsvp = async value => {
         $$('[data-rsvp]').forEach(button => button.classList.toggle('is-active', button.dataset.rsvp === value));
-        rsvpNote.textContent = value === 'yes' ? 'Rahmat! Sizni xursandchilik bilan kutamiz.' : value === 'no' ? 'Javobingiz uchun rahmat. Sizni yaxshi tilaklarimizda eslaymiz.' : '';
-        if (value) storageSet('weddingRsvp', value);
+        if (!value) { rsvpNote.textContent = ''; return; }
+        storageSet('weddingRsvp', value);
+        rsvpNote.textContent = 'Javobingiz saqlanmoqda…';
+        try {
+          await saveRsvpOnline(value);
+          rsvpNote.textContent = value === 'yes' ? 'Rahmat! Sizni xursandchilik bilan kutamiz.' : 'Javobingiz uchun rahmat. Sizni yaxshi tilaklarimizda eslaymiz.';
+        } catch (error) {
+          console.warn(error);
+          rsvpNote.textContent = 'Javob telefonda saqlandi. Internet tiklanganda yana bosib yuborishingiz mumkin.';
+        }
       };
       $$('[data-rsvp]').forEach(button => button.addEventListener('click', () => setRsvp(button.dataset.rsvp)));
-      setRsvp(storageGet('weddingRsvp'));
+      const savedRsvp = storageGet('weddingRsvp');
+      if (savedRsvp) $$('[data-rsvp]').forEach(button => button.classList.toggle('is-active', button.dataset.rsvp === savedRsvp));
 
       if ('IntersectionObserver' in window && !reducedMotion) {
         const observer = new IntersectionObserver(entries => {

@@ -1,11 +1,17 @@
-# Umarxo‘ja & Feruza — scroll invitation
+# Umarxo‘ja & Feruzaxon — wedding invitation
 
-A minimal mobile wedding invitation that assembles itself as the guest scrolls.
+A responsive, optimized wedding invitation with:
 
-- blank cream opening canvas;
-- scroll-controlled navy-and-gold frame animation;
-- names, invitation message, date, venue and family attribution reveal in stages;
-- no countdown, cards, map, RSVP, buttons or extra sections;
-- responsive and reduced-motion friendly.
+- tap-to-open envelope and invitation;
+- personalized guest names through the `?to=` URL parameter;
+- invitation artwork, countdown, venue, map and calendar download;
+- background music loaded only after a guest opens the invitation;
+- online RSVP responses stored in Supabase;
+- an RSVP dashboard at `/admin/`.
 
-Live site: https://seanutk.github.io/umarxoja-feruza-invitation/
+Live sites:
+
+- Vercel: https://umarxoja-feruza-invitation.vercel.app/
+- GitHub Pages: https://seanutk.github.io/umarxoja-feruza-invitation/
+
+> Privacy note: `/admin/` is intentionally unauthenticated in the supplied version and can display guest responses to anyone who knows the URL.
